@@ -1,4 +1,4 @@
-// ../../.cache/deno/deno_esbuild/registry.npmjs.org/preact@10.28.3/node_modules/preact/dist/preact.module.js
+// ../../../../../../../.cache/deno/deno_esbuild/registry.npmjs.org/preact@10.28.3/node_modules/preact/dist/preact.module.js
 var n;
 var l;
 var u;
@@ -256,7 +256,7 @@ n = v.slice, l = { __e: function(n3, l5, u5, t4) {
   return n3.__v.__b - l5.__v.__b;
 }, $.__r = 0, f = /(PointerCapture)$|Capture$/i, c = 0, s = F(false), a = F(true), h = 0;
 
-// ../../.cache/deno/deno_esbuild/registry.npmjs.org/preact@10.28.3/node_modules/preact/hooks/dist/hooks.module.js
+// ../../../../../../../.cache/deno/deno_esbuild/registry.npmjs.org/preact@10.28.3/node_modules/preact/hooks/dist/hooks.module.js
 var t2;
 var r2;
 var u2;
@@ -350,7 +350,7 @@ function C2(n3, t4) {
   });
 }
 
-// ../../.cache/deno/deno_esbuild/registry.npmjs.org/@preact/signals-core@1.13.0/node_modules/@preact/signals-core/dist/signals-core.module.js
+// ../../../../../../../.cache/deno/deno_esbuild/registry.npmjs.org/@preact/signals-core@1.13.0/node_modules/@preact/signals-core/dist/signals-core.module.js
 var i3 = Symbol.for("preact-signals");
 function t3() {
   if (!(s3 > 1)) {
@@ -723,7 +723,7 @@ function m3(i5, t4) {
   return r4;
 }
 
-// ../../.cache/deno/deno_esbuild/registry.npmjs.org/@preact/signals@2.7.1_preact@10.28.3/node_modules/@preact/signals/dist/signals.module.js
+// ../../../../../../../.cache/deno/deno_esbuild/registry.npmjs.org/@preact/signals@2.7.1_preact@10.28.3/node_modules/@preact/signals/dist/signals.module.js
 var l4;
 var h3;
 var d3;
@@ -992,8 +992,8 @@ async function poll() {
   draft.value = d4;
   running.value = r4;
   queued.value = q3;
-  done.value = dn;
-  cancelled.value = c4;
+  done.value = dn.sort((a4, b3) => b3.id - a4.id);
+  cancelled.value = c4.sort((a4, b3) => b3.id - a4.id);
 }
 var timer;
 function startPolling() {
@@ -1007,7 +1007,7 @@ function stopPolling() {
   }
 }
 
-// ../../.cache/deno/deno_esbuild/registry.npmjs.org/preact@10.28.3/node_modules/preact/jsx-runtime/dist/jsxRuntime.module.js
+// ../../../../../../../.cache/deno/deno_esbuild/registry.npmjs.org/preact@10.28.3/node_modules/preact/jsx-runtime/dist/jsxRuntime.module.js
 var f4 = 0;
 var i4 = Array.isArray;
 function u4(e4, t4, n3, o4, i5, u5) {
