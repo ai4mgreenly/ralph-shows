@@ -45,8 +45,8 @@ export async function poll() {
   draft.value = d;
   running.value = r;
   queued.value = q;
-  done.value = dn;
-  cancelled.value = c;
+  done.value = dn.sort((a, b) => b.id - a.id);
+  cancelled.value = c.sort((a, b) => b.id - a.id);
 }
 
 let timer: number | undefined;
