@@ -16,11 +16,47 @@ export interface GoalDetail extends Goal {
   updated_at: string;
 }
 
-export async function fetchGoals(status: string): Promise<Goal[]> {
-  const res = await fetch(`${BASE}/goals?status=${status}`);
+export interface PaginatedGoals {
+  items: Goal[];
+  page: number;
+  total: number;
+}
+
+export async function fetchGoals(
+  status: string,
+  page?: number,
+  per_page?: number
+): Promise<PaginatedGoals> {
+  let url = `${BASE}/goals?status=${status}`;
+  if (page !== undefined) {
+    url += `&page=${page}`;
+  }
+  if (per_page !== undefined) {
+    url += `&per_page=${per_page}`;
+  }
+
+  const res = await fetch(url);
   const data = await res.json();
-  if (!data.ok) return [];
-  return data.items ?? [];
+
+  if (!data.ok) {
+    return { items: [], page: 1, total: 0 };
+  }
+
+  // If pagination params were provided, API returns pagination metadata
+  if (page !== undefined) {
+    return {
+      items: data.items ?? [],
+      page: data.page ?? 1,
+      total: data.total ?? 0,
+    };
+  }
+
+  // Legacy behavior: no pagination
+  return {
+    items: data.items ?? [],
+    page: 1,
+    total: (data.items ?? []).length,
+  };
 }
 
 export interface Comment {

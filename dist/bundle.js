@@ -934,11 +934,31 @@ function F2() {
 
 // src/api.ts
 var BASE = "http://localhost:5001";
-async function fetchGoals(status) {
-  const res = await fetch(`${BASE}/goals?status=${status}`);
+async function fetchGoals(status, page, per_page) {
+  let url = `${BASE}/goals?status=${status}`;
+  if (page !== void 0) {
+    url += `&page=${page}`;
+  }
+  if (per_page !== void 0) {
+    url += `&per_page=${per_page}`;
+  }
+  const res = await fetch(url);
   const data = await res.json();
-  if (!data.ok) return [];
-  return data.items ?? [];
+  if (!data.ok) {
+    return { items: [], page: 1, total: 0 };
+  }
+  if (page !== void 0) {
+    return {
+      items: data.items ?? [],
+      page: data.page ?? 1,
+      total: data.total ?? 0
+    };
+  }
+  return {
+    items: data.items ?? [],
+    page: 1,
+    total: (data.items ?? []).length
+  };
 }
 async function fetchGoal(id) {
   const res = await fetch(`${BASE}/goals/${id}`);
@@ -957,11 +977,11 @@ async function fetchComments(goalId) {
 var route = c3(
   { view: "dashboard" }
 );
-var draft = c3([]);
-var running = c3([]);
-var queued = c3([]);
-var done = c3([]);
-var cancelled = c3([]);
+var draft = c3({ items: [], page: 1, total: 0 });
+var running = c3({ items: [], page: 1, total: 0 });
+var queued = c3({ items: [], page: 1, total: 0 });
+var done = c3({ items: [], page: 1, total: 0 });
+var cancelled = c3({ items: [], page: 1, total: 0 });
 function navigate(goalId) {
   location.hash = `#/goals/${goalId}`;
 }
@@ -983,17 +1003,28 @@ function initRouter() {
 }
 async function poll() {
   const [d4, r4, q3, dn, c4] = await Promise.all([
-    fetchGoals("draft"),
-    fetchGoals("running"),
-    fetchGoals("queued"),
-    fetchGoals("done"),
-    fetchGoals("cancelled")
+    fetchGoals("draft", draft.value.page, 10),
+    fetchGoals("running", running.value.page, 10),
+    fetchGoals("queued", queued.value.page, 10),
+    fetchGoals("done", done.value.page, 10),
+    fetchGoals("cancelled", cancelled.value.page, 10)
   ]);
   draft.value = d4;
   running.value = r4;
   queued.value = q3;
-  done.value = dn.sort((a4, b3) => b3.id - a4.id);
-  cancelled.value = c4.sort((a4, b3) => b3.id - a4.id);
+  done.value = { ...dn, items: dn.items.sort((a4, b3) => b3.id - a4.id) };
+  cancelled.value = { ...c4, items: c4.items.sort((a4, b3) => b3.id - a4.id) };
+}
+function setPage(section, page) {
+  const signal = section === "draft" ? draft : section === "running" ? running : section === "queued" ? queued : section === "done" ? done : cancelled;
+  signal.value = { ...signal.value, page };
+  fetchGoals(section, page, 10).then((data) => {
+    if (section === "done" || section === "cancelled") {
+      signal.value = { ...data, items: data.items.sort((a4, b3) => b3.id - a4.id) };
+    } else {
+      signal.value = data;
+    }
+  });
 }
 var timer;
 function startPolling() {
@@ -1021,116 +1052,266 @@ function u4(e4, t4, n3, o4, i5, u5) {
 
 // src/components/draft.tsx
 function Draft() {
-  const goals = draft.value;
+  const { items, page, total } = draft.value;
+  const totalPages = Math.ceil(total / 10);
+  const showPagination = total > 10;
   return /* @__PURE__ */ u4("section", { children: [
     /* @__PURE__ */ u4("h2", { children: "Draft" }),
-    goals.length === 0 ? /* @__PURE__ */ u4("p", { class: "empty", children: "No draft goals" }) : /* @__PURE__ */ u4("ul", { class: "goal-list", children: goals.map((g4) => /* @__PURE__ */ u4("li", { class: "goal-item", children: [
-      /* @__PURE__ */ u4("span", { class: "goal-id", children: [
-        "#",
-        g4.id
-      ] }),
-      /* @__PURE__ */ u4("span", { class: "goal-repo", children: [
-        g4.org,
-        "/",
-        g4.repo
-      ] }),
-      /* @__PURE__ */ u4("a", { class: "goal-title", href: `#/goals/${g4.id}`, onClick: (e4) => {
-        e4.preventDefault();
-        navigate(g4.id);
-      }, children: g4.title })
-    ] }, g4.id)) })
+    items.length === 0 ? /* @__PURE__ */ u4("p", { class: "empty", children: "No draft goals" }) : /* @__PURE__ */ u4(k, { children: [
+      /* @__PURE__ */ u4("ul", { class: "goal-list", children: items.map((g4) => /* @__PURE__ */ u4("li", { class: "goal-item", children: [
+        /* @__PURE__ */ u4("span", { class: "goal-id", children: [
+          "#",
+          g4.id
+        ] }),
+        /* @__PURE__ */ u4("span", { class: "goal-repo", children: [
+          g4.org,
+          "/",
+          g4.repo
+        ] }),
+        /* @__PURE__ */ u4("a", { class: "goal-title", href: `#/goals/${g4.id}`, onClick: (e4) => {
+          e4.preventDefault();
+          navigate(g4.id);
+        }, children: g4.title })
+      ] }, g4.id)) }),
+      showPagination && /* @__PURE__ */ u4("div", { class: "pagination", children: [
+        /* @__PURE__ */ u4(
+          "button",
+          {
+            disabled: page === 1,
+            onClick: () => setPage("draft", page - 1),
+            style: { visibility: page === 1 ? "hidden" : "visible" },
+            children: "Prev"
+          }
+        ),
+        /* @__PURE__ */ u4("span", { children: [
+          "Page ",
+          page,
+          " of ",
+          totalPages
+        ] }),
+        /* @__PURE__ */ u4(
+          "button",
+          {
+            disabled: page === totalPages,
+            onClick: () => setPage("draft", page + 1),
+            style: { visibility: page === totalPages ? "hidden" : "visible" },
+            children: "Next"
+          }
+        )
+      ] })
+    ] })
   ] });
 }
 
 // src/components/running.tsx
 function Running() {
-  const goals = running.value;
+  const { items, page, total } = running.value;
+  const totalPages = Math.ceil(total / 10);
+  const showPagination = total > 10;
   return /* @__PURE__ */ u4("section", { children: [
     /* @__PURE__ */ u4("h2", { children: "Running" }),
-    goals.length === 0 ? /* @__PURE__ */ u4("p", { class: "empty", children: "No goals running" }) : /* @__PURE__ */ u4("ul", { class: "goal-list", children: goals.map((g4) => /* @__PURE__ */ u4("li", { class: "goal-item", children: [
-      /* @__PURE__ */ u4("span", { class: "goal-id", children: [
-        "#",
-        g4.id
-      ] }),
-      /* @__PURE__ */ u4("span", { class: "goal-repo", children: [
-        g4.org,
-        "/",
-        g4.repo
-      ] }),
-      /* @__PURE__ */ u4("a", { class: "goal-title", href: `#/goals/${g4.id}`, onClick: (e4) => {
-        e4.preventDefault();
-        navigate(g4.id);
-      }, children: g4.title })
-    ] }, g4.id)) })
+    items.length === 0 ? /* @__PURE__ */ u4("p", { class: "empty", children: "No goals running" }) : /* @__PURE__ */ u4(k, { children: [
+      /* @__PURE__ */ u4("ul", { class: "goal-list", children: items.map((g4) => /* @__PURE__ */ u4("li", { class: "goal-item", children: [
+        /* @__PURE__ */ u4("span", { class: "goal-id", children: [
+          "#",
+          g4.id
+        ] }),
+        /* @__PURE__ */ u4("span", { class: "goal-repo", children: [
+          g4.org,
+          "/",
+          g4.repo
+        ] }),
+        /* @__PURE__ */ u4("a", { class: "goal-title", href: `#/goals/${g4.id}`, onClick: (e4) => {
+          e4.preventDefault();
+          navigate(g4.id);
+        }, children: g4.title })
+      ] }, g4.id)) }),
+      showPagination && /* @__PURE__ */ u4("div", { class: "pagination", children: [
+        /* @__PURE__ */ u4(
+          "button",
+          {
+            disabled: page === 1,
+            onClick: () => setPage("running", page - 1),
+            style: { visibility: page === 1 ? "hidden" : "visible" },
+            children: "Prev"
+          }
+        ),
+        /* @__PURE__ */ u4("span", { children: [
+          "Page ",
+          page,
+          " of ",
+          totalPages
+        ] }),
+        /* @__PURE__ */ u4(
+          "button",
+          {
+            disabled: page === totalPages,
+            onClick: () => setPage("running", page + 1),
+            style: { visibility: page === totalPages ? "hidden" : "visible" },
+            children: "Next"
+          }
+        )
+      ] })
+    ] })
   ] });
 }
 
 // src/components/queued.tsx
 function Queued() {
-  const goals = queued.value;
+  const { items, page, total } = queued.value;
+  const totalPages = Math.ceil(total / 10);
+  const showPagination = total > 10;
   return /* @__PURE__ */ u4("section", { children: [
     /* @__PURE__ */ u4("h2", { children: "Queued" }),
-    goals.length === 0 ? /* @__PURE__ */ u4("p", { class: "empty", children: "No goals queued" }) : /* @__PURE__ */ u4("ul", { class: "goal-list", children: goals.map((g4) => /* @__PURE__ */ u4("li", { class: "goal-item", children: [
-      /* @__PURE__ */ u4("span", { class: "goal-id", children: [
-        "#",
-        g4.id
-      ] }),
-      /* @__PURE__ */ u4("span", { class: "goal-repo", children: [
-        g4.org,
-        "/",
-        g4.repo
-      ] }),
-      /* @__PURE__ */ u4("a", { class: "goal-title", href: `#/goals/${g4.id}`, onClick: (e4) => {
-        e4.preventDefault();
-        navigate(g4.id);
-      }, children: g4.title })
-    ] }, g4.id)) })
+    items.length === 0 ? /* @__PURE__ */ u4("p", { class: "empty", children: "No goals queued" }) : /* @__PURE__ */ u4(k, { children: [
+      /* @__PURE__ */ u4("ul", { class: "goal-list", children: items.map((g4) => /* @__PURE__ */ u4("li", { class: "goal-item", children: [
+        /* @__PURE__ */ u4("span", { class: "goal-id", children: [
+          "#",
+          g4.id
+        ] }),
+        /* @__PURE__ */ u4("span", { class: "goal-repo", children: [
+          g4.org,
+          "/",
+          g4.repo
+        ] }),
+        /* @__PURE__ */ u4("a", { class: "goal-title", href: `#/goals/${g4.id}`, onClick: (e4) => {
+          e4.preventDefault();
+          navigate(g4.id);
+        }, children: g4.title })
+      ] }, g4.id)) }),
+      showPagination && /* @__PURE__ */ u4("div", { class: "pagination", children: [
+        /* @__PURE__ */ u4(
+          "button",
+          {
+            disabled: page === 1,
+            onClick: () => setPage("queued", page - 1),
+            style: { visibility: page === 1 ? "hidden" : "visible" },
+            children: "Prev"
+          }
+        ),
+        /* @__PURE__ */ u4("span", { children: [
+          "Page ",
+          page,
+          " of ",
+          totalPages
+        ] }),
+        /* @__PURE__ */ u4(
+          "button",
+          {
+            disabled: page === totalPages,
+            onClick: () => setPage("queued", page + 1),
+            style: { visibility: page === totalPages ? "hidden" : "visible" },
+            children: "Next"
+          }
+        )
+      ] })
+    ] })
   ] });
 }
 
 // src/components/done.tsx
 function Done() {
-  const goals = done.value;
+  const { items, page, total } = done.value;
+  const totalPages = Math.ceil(total / 10);
+  const showPagination = total > 10;
   return /* @__PURE__ */ u4("section", { children: [
     /* @__PURE__ */ u4("h2", { children: "Done" }),
-    goals.length === 0 ? /* @__PURE__ */ u4("p", { class: "empty", children: "No done goals" }) : /* @__PURE__ */ u4("ul", { class: "goal-list", children: goals.map((g4) => /* @__PURE__ */ u4("li", { class: "goal-item", children: [
-      /* @__PURE__ */ u4("span", { class: "goal-id", children: [
-        "#",
-        g4.id
-      ] }),
-      /* @__PURE__ */ u4("span", { class: "goal-repo", children: [
-        g4.org,
-        "/",
-        g4.repo
-      ] }),
-      /* @__PURE__ */ u4("a", { class: "goal-title", href: `#/goals/${g4.id}`, onClick: (e4) => {
-        e4.preventDefault();
-        navigate(g4.id);
-      }, children: g4.title })
-    ] }, g4.id)) })
+    items.length === 0 ? /* @__PURE__ */ u4("p", { class: "empty", children: "No done goals" }) : /* @__PURE__ */ u4(k, { children: [
+      /* @__PURE__ */ u4("ul", { class: "goal-list", children: items.map((g4) => /* @__PURE__ */ u4("li", { class: "goal-item", children: [
+        /* @__PURE__ */ u4("span", { class: "goal-id", children: [
+          "#",
+          g4.id
+        ] }),
+        /* @__PURE__ */ u4("span", { class: "goal-repo", children: [
+          g4.org,
+          "/",
+          g4.repo
+        ] }),
+        /* @__PURE__ */ u4("a", { class: "goal-title", href: `#/goals/${g4.id}`, onClick: (e4) => {
+          e4.preventDefault();
+          navigate(g4.id);
+        }, children: g4.title })
+      ] }, g4.id)) }),
+      showPagination && /* @__PURE__ */ u4("div", { class: "pagination", children: [
+        /* @__PURE__ */ u4(
+          "button",
+          {
+            disabled: page === 1,
+            onClick: () => setPage("done", page - 1),
+            style: { visibility: page === 1 ? "hidden" : "visible" },
+            children: "Prev"
+          }
+        ),
+        /* @__PURE__ */ u4("span", { children: [
+          "Page ",
+          page,
+          " of ",
+          totalPages
+        ] }),
+        /* @__PURE__ */ u4(
+          "button",
+          {
+            disabled: page === totalPages,
+            onClick: () => setPage("done", page + 1),
+            style: { visibility: page === totalPages ? "hidden" : "visible" },
+            children: "Next"
+          }
+        )
+      ] })
+    ] })
   ] });
 }
 
 // src/components/cancelled.tsx
 function Cancelled() {
-  const goals = cancelled.value;
+  const { items, page, total } = cancelled.value;
+  const totalPages = Math.ceil(total / 10);
+  const showPagination = total > 10;
   return /* @__PURE__ */ u4("section", { children: [
     /* @__PURE__ */ u4("h2", { children: "Cancelled" }),
-    goals.length === 0 ? /* @__PURE__ */ u4("p", { class: "empty", children: "No cancelled goals" }) : /* @__PURE__ */ u4("ul", { class: "goal-list", children: goals.map((g4) => /* @__PURE__ */ u4("li", { class: "goal-item", children: [
-      /* @__PURE__ */ u4("span", { class: "goal-id", children: [
-        "#",
-        g4.id
-      ] }),
-      /* @__PURE__ */ u4("span", { class: "goal-repo", children: [
-        g4.org,
-        "/",
-        g4.repo
-      ] }),
-      /* @__PURE__ */ u4("a", { class: "goal-title", href: `#/goals/${g4.id}`, onClick: (e4) => {
-        e4.preventDefault();
-        navigate(g4.id);
-      }, children: g4.title })
-    ] }, g4.id)) })
+    items.length === 0 ? /* @__PURE__ */ u4("p", { class: "empty", children: "No cancelled goals" }) : /* @__PURE__ */ u4(k, { children: [
+      /* @__PURE__ */ u4("ul", { class: "goal-list", children: items.map((g4) => /* @__PURE__ */ u4("li", { class: "goal-item", children: [
+        /* @__PURE__ */ u4("span", { class: "goal-id", children: [
+          "#",
+          g4.id
+        ] }),
+        /* @__PURE__ */ u4("span", { class: "goal-repo", children: [
+          g4.org,
+          "/",
+          g4.repo
+        ] }),
+        /* @__PURE__ */ u4("a", { class: "goal-title", href: `#/goals/${g4.id}`, onClick: (e4) => {
+          e4.preventDefault();
+          navigate(g4.id);
+        }, children: g4.title })
+      ] }, g4.id)) }),
+      showPagination && /* @__PURE__ */ u4("div", { class: "pagination", children: [
+        /* @__PURE__ */ u4(
+          "button",
+          {
+            disabled: page === 1,
+            onClick: () => setPage("cancelled", page - 1),
+            style: { visibility: page === 1 ? "hidden" : "visible" },
+            children: "Prev"
+          }
+        ),
+        /* @__PURE__ */ u4("span", { children: [
+          "Page ",
+          page,
+          " of ",
+          totalPages
+        ] }),
+        /* @__PURE__ */ u4(
+          "button",
+          {
+            disabled: page === totalPages,
+            onClick: () => setPage("cancelled", page + 1),
+            style: { visibility: page === totalPages ? "hidden" : "visible" },
+            children: "Next"
+          }
+        )
+      ] })
+    ] })
   ] });
 }
 
