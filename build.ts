@@ -18,6 +18,7 @@ await esbuild.build({
 });
 
 await Deno.copyFile("index.html", "dist/index.html");
+await Deno.copyFile("favicon.jpeg", "dist/favicon.jpeg");
 
 esbuild.stop();
 console.log("Build complete → dist/");
