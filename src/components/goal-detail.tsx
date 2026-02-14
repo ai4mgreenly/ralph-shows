@@ -37,7 +37,6 @@ export function GoalDetail({ id }: { id: number }) {
       <div class="detail-meta">
         <span class="goal-repo">{g.org}/{g.repo}</span>
         <span class="detail-status" data-status={g.status}>{g.status}</span>
-        {g.review && <span class="detail-review">review</span>}
       </div>
       <div class="detail-timestamps">
         <span>created {g.created_at}</span>
