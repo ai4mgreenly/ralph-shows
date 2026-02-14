@@ -11,7 +11,6 @@ export interface Goal {
 
 export interface GoalDetail extends Goal {
   body: string;
-  review: boolean;
   created_at: string;
   updated_at: string;
 }
