@@ -22,7 +22,9 @@ Deno.serve({ hostname: host, port }, async (req) => {
       ? "application/javascript"
       : path.endsWith(".html")
         ? "text/html"
-        : "application/octet-stream";
+        : path.endsWith(".jpeg") || path.endsWith(".jpg")
+          ? "image/jpeg"
+          : "application/octet-stream";
     return new Response(file.readable, {
       headers: { "content-type": contentType },
     });
