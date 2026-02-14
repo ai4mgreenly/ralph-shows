@@ -152,6 +152,10 @@ Key principles: specify WHAT not HOW, reference liberally, make discovery explic
 
 Full guide: `.claude/library/goal-authoring/SKILL.md`
 
+### Goal Authoring for This Repo
+
+When creating goals targeting this repository, use `--org ai4mgreenly --repo ralph-shows`.
+
 ## Common Tasks
 
 **Adding a component:** Create `src/components/<name>.tsx`, import in `app.tsx`.
