@@ -1,5 +1,5 @@
 import { useEffect } from "preact/hooks";
-import { startPolling, stopPolling, initRouter, route } from "./state.ts";
+import { startPolling, stopPolling, initRouter, route, navigateHome } from "./state.ts";
 import { Draft } from "./components/draft.tsx";
 import { Running } from "./components/running.tsx";
 import { Queued } from "./components/queued.tsx";
@@ -19,7 +19,7 @@ export function App() {
   if (r.view === "goal") {
     return (
       <div class="dashboard">
-        <h1>ralphs</h1>
+        <h1 onClick={navigateHome}>ralphs</h1>
         <GoalDetail id={r.id} />
       </div>
     );
@@ -27,7 +27,7 @@ export function App() {
 
   return (
     <div class="dashboard">
-      <h1>ralphs</h1>
+      <h1 onClick={navigateHome}>ralphs</h1>
       <Running />
       <Queued />
       <Draft />
