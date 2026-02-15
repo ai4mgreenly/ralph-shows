@@ -29,6 +29,22 @@ Goals are created via `goal-create` with body on stdin. The body must follow thi
 [Success criteria: tests pass, specific commands succeed, etc.]
 ```
 
+## Model and Reasoning Selection
+
+Goals can optionally specify model tier and reasoning level via `--model` and `--reasoning` flags.
+
+**When to specify:**
+
+- **Model** — Use `--model opus` for complex refactoring, architectural changes, or work requiring deep codebase understanding. Use `--model haiku` for simple, well-defined tasks. Default (omit flag) is usually appropriate.
+- **Reasoning** — Use `--reasoning high` for tasks requiring multi-step planning or complex problem-solving. Use `--reasoning none` or `--reasoning low` for straightforward implementation. Default (omit flag) is usually appropriate.
+
+**Default behavior:** When flags are omitted, the orchestrator selects appropriate defaults based on goal complexity.
+
+**Example:**
+```bash
+goal-create --title "Refactor auth system" --org myorg --repo myrepo --model opus --reasoning high < goal.md
+```
+
 ## Key Principles
 
 1. **Specify WHAT, never HOW** — Outcomes, not steps/order
