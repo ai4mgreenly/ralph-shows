@@ -13,6 +13,8 @@ export interface GoalDetail extends Goal {
   body: string;
   created_at: string;
   updated_at: string;
+  model: string | null;
+  reasoning: string | null;
 }
 
 export interface PaginatedGoals {
