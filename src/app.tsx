@@ -3,7 +3,9 @@ import { startPolling, stopPolling, initRouter, route, navigateHome } from "./st
 import { Draft } from "./components/draft.tsx";
 import { Running } from "./components/running.tsx";
 import { Queued } from "./components/queued.tsx";
-import { Done } from "./components/done.tsx";
+import { Submitted } from "./components/submitted.tsx";
+import { Merged } from "./components/merged.tsx";
+import { Rejected } from "./components/rejected.tsx";
 import { Cancelled } from "./components/cancelled.tsx";
 import { GoalDetail } from "./components/goal-detail.tsx";
 
@@ -31,7 +33,9 @@ export function App() {
       <Running />
       <Queued />
       <Draft />
-      <Done />
+      <Submitted />
+      <Merged />
+      <Rejected />
       <Cancelled />
     </div>
   );
