@@ -8,7 +8,9 @@ export const route = signal<{ view: "dashboard" } | { view: "goal"; id: number }
 export const draft = signal<PaginatedGoals>({ items: [], page: 1, total: 0 });
 export const running = signal<PaginatedGoals>({ items: [], page: 1, total: 0 });
 export const queued = signal<PaginatedGoals>({ items: [], page: 1, total: 0 });
-export const done = signal<PaginatedGoals>({ items: [], page: 1, total: 0 });
+export const submitted = signal<PaginatedGoals>({ items: [], page: 1, total: 0 });
+export const merged = signal<PaginatedGoals>({ items: [], page: 1, total: 0 });
+export const rejected = signal<PaginatedGoals>({ items: [], page: 1, total: 0 });
 export const cancelled = signal<PaginatedGoals>({ items: [], page: 1, total: 0 });
 
 export function navigate(goalId: number) {
@@ -35,32 +37,38 @@ export function initRouter() {
 }
 
 export async function poll() {
-  const [d, r, q, dn, c] = await Promise.all([
+  const [d, r, q, s, m, rj, c] = await Promise.all([
     fetchGoals("draft", draft.value.page, 10),
     fetchGoals("running", running.value.page, 10),
     fetchGoals("queued", queued.value.page, 10),
-    fetchGoals("done", done.value.page, 10),
+    fetchGoals("submitted", submitted.value.page, 10),
+    fetchGoals("merged", merged.value.page, 10),
+    fetchGoals("rejected", rejected.value.page, 10),
     fetchGoals("cancelled", cancelled.value.page, 10),
   ]);
   draft.value = d;
   running.value = r;
   queued.value = q;
-  done.value = { ...dn, items: dn.items.sort((a, b) => b.id - a.id) };
+  submitted.value = { ...s, items: s.items.sort((a, b) => b.id - a.id) };
+  merged.value = { ...m, items: m.items.sort((a, b) => b.id - a.id) };
+  rejected.value = { ...rj, items: rj.items.sort((a, b) => b.id - a.id) };
   cancelled.value = { ...c, items: c.items.sort((a, b) => b.id - a.id) };
 }
 
-export function setPage(section: "draft" | "running" | "queued" | "done" | "cancelled", page: number) {
+export function setPage(section: "draft" | "running" | "queued" | "submitted" | "merged" | "rejected" | "cancelled", page: number) {
   const signal = section === "draft" ? draft :
                  section === "running" ? running :
                  section === "queued" ? queued :
-                 section === "done" ? done :
+                 section === "submitted" ? submitted :
+                 section === "merged" ? merged :
+                 section === "rejected" ? rejected :
                  cancelled;
 
   signal.value = { ...signal.value, page };
 
   // Immediately fetch the new page
   fetchGoals(section, page, 10).then((data) => {
-    if (section === "done" || section === "cancelled") {
+    if (section === "submitted" || section === "merged" || section === "rejected" || section === "cancelled") {
       signal.value = { ...data, items: data.items.sort((a, b) => b.id - a.id) };
     } else {
       signal.value = data;
