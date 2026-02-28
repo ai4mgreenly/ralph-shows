@@ -11,7 +11,7 @@ import { GoalDetail } from "./components/goal-detail.tsx";
 function SummaryBar() {
   return (
     <div style="font-family: monospace; font-size: 0.9em; color: #aaa; margin-bottom: 1em;">
-      ({running.value.total}) running, ({queued.value.total}) queued, ({draft.value.total}) draft, ({done.value.total}) done, ({stuck.value.total}) stuck, ({cancelled.value.total}) cancelled
+      ({running.value.total}) running, ({stuck.value.total}) stuck, ({queued.value.total}) queued, ({draft.value.total}) draft, ({done.value.total}) done, ({cancelled.value.total}) cancelled
     </div>
   );
 }
@@ -39,10 +39,10 @@ export function App() {
       <h1 onClick={navigateHome}>ralphs</h1>
       <SummaryBar />
       <Running />
+      <Stuck />
       <Queued />
       <Draft />
       <Done />
-      <Stuck />
       <Cancelled />
     </div>
   );
