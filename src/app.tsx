@@ -28,7 +28,7 @@ export function App() {
   if (r.view === "goal") {
     return (
       <div class="dashboard">
-        <h1 onClick={navigateHome}>ralphs</h1>
+        <h1 onClick={navigateHome}>RALPHS</h1>
         <GoalDetail id={r.id} />
       </div>
     );
@@ -36,7 +36,7 @@ export function App() {
 
   return (
     <div class="dashboard">
-      <h1 onClick={navigateHome}>ralphs</h1>
+      <h1 onClick={navigateHome}>RALPHS</h1>
       <SummaryBar />
       <Running />
       <Stuck />
