@@ -37,11 +37,6 @@ export function GoalDetail({ id }: { id: number }) {
       <div class="detail-meta">
         <span class="goal-repo">{g.org}/{g.repo}</span>
         <span class="detail-status" data-status={g.status}>{g.status}</span>
-        {g.pr != null && (
-          <a href={`https://github.com/${g.org}/${g.repo}/pull/${g.pr}`} target="_blank" rel="noopener noreferrer">
-            PR #{g.pr}
-          </a>
-        )}
         <span>model: {g.model ?? "default"}</span>
         <span>reasoning: {g.reasoning ?? "default"}</span>
       </div>

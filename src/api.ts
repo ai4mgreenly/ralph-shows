@@ -15,7 +15,6 @@ export interface GoalDetail extends Goal {
   updated_at: string;
   model: string | null;
   reasoning: string | null;
-  pr: number | null;
 }
 
 export interface PaginatedGoals {

@@ -1,15 +1,15 @@
-import { merged, navigate, setPage } from "../state.ts";
+import { done, navigate, setPage } from "../state.ts";
 
-export function Merged() {
-  const { items, page, total } = merged.value;
+export function Done() {
+  const { items, page, total } = done.value;
   const totalPages = Math.ceil(total / 10);
   const showPagination = total > 10;
 
   return (
     <section>
-      <h2>Merged</h2>
+      <h2>Done</h2>
       {items.length === 0 ? (
-        <p class="empty">No merged goals</p>
+        <p class="empty">No done goals</p>
       ) : (
         <>
           <ul class="goal-list">
@@ -25,7 +25,7 @@ export function Merged() {
             <div class="pagination">
               <button
                 disabled={page === 1}
-                onClick={() => setPage("merged", page - 1)}
+                onClick={() => setPage("done", page - 1)}
                 style={{ visibility: page === 1 ? "hidden" : "visible" }}
               >
                 Prev
@@ -33,7 +33,7 @@ export function Merged() {
               <span>Page {page} of {totalPages}</span>
               <button
                 disabled={page === totalPages}
-                onClick={() => setPage("merged", page + 1)}
+                onClick={() => setPage("done", page + 1)}
                 style={{ visibility: page === totalPages ? "hidden" : "visible" }}
               >
                 Next

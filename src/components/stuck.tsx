@@ -1,15 +1,15 @@
-import { rejected, navigate, setPage } from "../state.ts";
+import { stuck, navigate, setPage } from "../state.ts";
 
-export function Rejected() {
-  const { items, page, total } = rejected.value;
+export function Stuck() {
+  const { items, page, total } = stuck.value;
   const totalPages = Math.ceil(total / 10);
   const showPagination = total > 10;
 
   return (
     <section>
-      <h2>Rejected</h2>
+      <h2>Stuck</h2>
       {items.length === 0 ? (
-        <p class="empty">No rejected goals</p>
+        <p class="empty">No stuck goals</p>
       ) : (
         <>
           <ul class="goal-list">
@@ -25,7 +25,7 @@ export function Rejected() {
             <div class="pagination">
               <button
                 disabled={page === 1}
-                onClick={() => setPage("rejected", page - 1)}
+                onClick={() => setPage("stuck", page - 1)}
                 style={{ visibility: page === 1 ? "hidden" : "visible" }}
               >
                 Prev
@@ -33,7 +33,7 @@ export function Rejected() {
               <span>Page {page} of {totalPages}</span>
               <button
                 disabled={page === totalPages}
-                onClick={() => setPage("rejected", page + 1)}
+                onClick={() => setPage("stuck", page + 1)}
                 style={{ visibility: page === totalPages ? "hidden" : "visible" }}
               >
                 Next
