@@ -1,5 +1,5 @@
 import { signal } from "@preact/signals";
-import { fetchGoals, type Goal, type PaginatedGoals } from "./api.ts";
+import { fetchGoals, fetchDependencies, fetchGoal, type Goal, type PaginatedGoals } from "./api.ts";
 
 export const route = signal<{ view: "dashboard" } | { view: "goal"; id: number }>(
   { view: "dashboard" },
@@ -8,6 +8,7 @@ export const route = signal<{ view: "dashboard" } | { view: "goal"; id: number }
 export const draft = signal<PaginatedGoals>({ items: [], page: 1, total: 0 });
 export const running = signal<PaginatedGoals>({ items: [], page: 1, total: 0 });
 export const queued = signal<PaginatedGoals>({ items: [], page: 1, total: 0 });
+export const queuedBlocked = signal<Set<number>>(new Set<number>());
 export const stuck = signal<PaginatedGoals>({ items: [], page: 1, total: 0 });
 export const done = signal<PaginatedGoals>({ items: [], page: 1, total: 0 });
 export const cancelled = signal<PaginatedGoals>({ items: [], page: 1, total: 0 });
@@ -47,6 +48,18 @@ export async function poll() {
   draft.value = d;
   running.value = r;
   queued.value = q;
+  // Check which queued goals are blocked by unmet dependencies (fire-and-forget, non-blocking)
+  Promise.all(
+    q.items.map(async (g) => {
+      const deps = await fetchDependencies(g.id);
+      if (deps.length === 0) return { id: g.id, blocked: false };
+      const depGoals = await Promise.all(deps.map((id) => fetchGoal(id)));
+      const blocked = depGoals.some((dep) => dep === null || dep.status !== "done");
+      return { id: g.id, blocked };
+    })
+  ).then((results) => {
+    queuedBlocked.value = new Set(results.filter((x) => x.blocked).map((x) => x.id));
+  });
   stuck.value = st;
   done.value = { ...dn, items: dn.items.sort((a, b) => b.id - a.id) };
   cancelled.value = { ...c, items: c.items.sort((a, b) => b.id - a.id) };
