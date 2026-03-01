@@ -1,10 +1,11 @@
 import { useEffect } from "preact/hooks";
 import { signal } from "@preact/signals";
-import { fetchGoal, fetchComments, type GoalDetail as GoalDetailType, type Comment } from "../api.ts";
-import { navigateHome } from "../state.ts";
+import { fetchGoal, fetchComments, fetchDependencies, type GoalDetail as GoalDetailType, type Comment, type Dependency } from "../api.ts";
+import { navigateHome, navigate } from "../state.ts";
 
 const goal = signal<GoalDetailType | null>(null);
 const comments = signal<Comment[]>([]);
+const deps = signal<Array<Dependency & { goal: GoalDetailType | null }>>([]);
 const loading = signal(true);
 
 export function GoalDetail({ id }: { id: number }) {
@@ -12,9 +13,15 @@ export function GoalDetail({ id }: { id: number }) {
     loading.value = true;
     goal.value = null;
     comments.value = [];
-    Promise.all([fetchGoal(id), fetchComments(id)]).then(([g, c]) => {
+    deps.value = [];
+    Promise.all([fetchGoal(id), fetchComments(id), fetchDependencies(id)]).then(async ([g, c, depList]) => {
       goal.value = g;
       comments.value = c;
+      const depGoals = await Promise.all(depList.map(async (d) => ({
+        ...d,
+        goal: await fetchGoal(d.depends_on_id),
+      })));
+      deps.value = depGoals;
       loading.value = false;
     });
   }, [id]);
@@ -45,6 +52,26 @@ export function GoalDetail({ id }: { id: number }) {
         <span>updated {g.updated_at}</span>
       </div>
       <pre class="detail-body">{g.body}</pre>
+      {deps.value.length > 0 && (
+        <>
+          <hr class="detail-separator" />
+          <div class="detail-dependencies">
+            <h2>Dependencies</h2>
+            <ul class="dep-list">
+              {deps.value.map((d) => (
+                <li key={d.depends_on_id} class="dep-item">
+                  <a href="#" onClick={(e) => { e.preventDefault(); navigate(d.depends_on_id); }}>
+                    #{d.depends_on_id}{d.goal ? ` "${d.goal.title}"` : ""}
+                  </a>
+                  {d.goal && (
+                    <span class="dep-status" data-status={d.goal.status}>{d.goal.status}</span>
+                  )}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </>
+      )}
       <hr class="detail-separator" />
       <div class="detail-comments">
         <h2>Comments</h2>
