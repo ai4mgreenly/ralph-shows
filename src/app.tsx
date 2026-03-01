@@ -48,7 +48,7 @@ export function App() {
 
   return (
     <div class="dashboard">
-      <div class="banner" />
+      <img class="banner-img" src="/theRALPHS.jpeg" alt="theRALPHS" />
       <h1 onClick={navigateHome}>theRALPHS</h1>
       <SummaryBar />
       <Running />
