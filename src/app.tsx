@@ -29,7 +29,6 @@ export function App() {
   if (r.view === "attachment") {
     return (
       <div class="dashboard">
-        <div class="banner" />
         <h1 onClick={navigateHome}>theRALPHS</h1>
         <AttachmentView goalId={r.goalId} attachmentId={r.attachmentId} />
       </div>
@@ -39,7 +38,6 @@ export function App() {
   if (r.view === "goal") {
     return (
       <div class="dashboard">
-        <div class="banner" />
         <h1 onClick={navigateHome}>theRALPHS</h1>
         <GoalDetail id={r.id} />
       </div>
