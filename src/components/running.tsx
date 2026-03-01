@@ -15,9 +15,9 @@ export function Running() {
           <ul class="goal-list">
             {items.map((g) => (
               <li key={g.id} class="goal-item">
-                <span class="goal-id">#{g.id}</span>
+                <a class="goal-id" href={`#/goals/${g.id}`} onClick={(e) => { e.preventDefault(); navigate(g.id); }}>#{g.id}</a>
                 <span class="goal-repo">{g.org}/{g.repo}</span>
-                <a class="goal-title" href={`#/goals/${g.id}`} onClick={(e) => { e.preventDefault(); navigate(g.id); }}>{g.title}</a>
+                <span class="goal-title">{g.title}</span>
                 <a class="goal-log" href={`http://localhost:5003/?file=/home/ai4mgreenly/.local/state/ralph/goals/${g.id}/ralph.log`} target="_blank" rel="noreferrer" style={{ marginLeft: "0.5em", fontSize: "0.85em", color: "#4fc3f7" }}>log</a>
               </li>
             ))}

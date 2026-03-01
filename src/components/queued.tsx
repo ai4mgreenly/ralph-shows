@@ -24,9 +24,9 @@ export function Queued() {
               const isBlocked = blocked.has(g.id);
               return (
               <li key={g.id} class="goal-item" style={isBlocked ? { opacity: "0.45" } : undefined}>
-                <span class="goal-id">#{g.id}</span>
+                <a class="goal-id" href={`#/goals/${g.id}`} onClick={(e) => { e.preventDefault(); navigate(g.id); }}>#{g.id}</a>
                 <span class="goal-repo">{g.org}/{g.repo}</span>
-                <a class="goal-title" href={`#/goals/${g.id}`} onClick={(e) => { e.preventDefault(); navigate(g.id); }}>{g.title}</a>
+                <span class="goal-title">{g.title}</span>
                 {isBlocked && <span style={{ color: "#888", fontSize: "0.8em", marginLeft: "0.5em" }}>[blocked]</span>}
               </li>
               );
