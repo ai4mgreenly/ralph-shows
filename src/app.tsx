@@ -29,6 +29,7 @@ export function App() {
   if (r.view === "attachment") {
     return (
       <div class="dashboard">
+        <img class="banner-img" src="/theRALPHS.jpeg" alt="theRALPHS" />
         <h1 onClick={navigateHome}>theRALPHS</h1>
         <AttachmentView goalId={r.goalId} attachmentId={r.attachmentId} />
       </div>
@@ -38,6 +39,7 @@ export function App() {
   if (r.view === "goal") {
     return (
       <div class="dashboard">
+        <img class="banner-img" src="/theRALPHS.jpeg" alt="theRALPHS" />
         <h1 onClick={navigateHome}>theRALPHS</h1>
         <GoalDetail id={r.id} />
       </div>
