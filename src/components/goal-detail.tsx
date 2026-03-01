@@ -61,10 +61,11 @@ export function GoalDetail({ id }: { id: number }) {
               {deps.value.map((d) => (
                 <li key={d.id} class="dep-item">
                   <a href="#" onClick={(e) => { e.preventDefault(); navigate(d.id); }}>
-                    #{d.id}{d.goal ? ` "${d.goal.title}"` : ""}
+                    #{d.id}
                   </a>
+                  {d.goal && <span class="dep-title">{d.goal.title}</span>}
                   {d.goal && (
-                    <span class="dep-status" data-status={d.goal.status}>{d.goal.status}</span>
+                    <span class="detail-status" data-status={d.goal.status}>{d.goal.status}</span>
                   )}
                 </li>
               ))}
