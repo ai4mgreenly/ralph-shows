@@ -39,8 +39,8 @@ export function App() {
       <h1 onClick={navigateHome}>theRALPHS</h1>
       <SummaryBar />
       <Running />
-      <Stuck />
       <Queued />
+      <Stuck />
       <Draft />
       <Done />
       <Cancelled />
