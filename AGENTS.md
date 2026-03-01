@@ -4,6 +4,19 @@ Lightweight dashboard for the Ralph pipeline. Displays the current state of goal
 
 Philosophy: deliberately minimalist. Preact + Signals, no CSS framework, no build toolchain beyond Deno.
 
+## IMPORTANT: Goals-First Workflow
+
+**All code changes in this repository are made through goals — not directly.**
+
+- **Default behavior**: When asked to make any code change, create and queue a goal. Do not make the change directly.
+- **Direct changes are the rare exception**: Only make direct code edits if the user gives extremely explicit, unambiguous instruction to do so (e.g., "make this change directly, do not create a goal"). Implied, ambiguous, or casual requests are not sufficient — when in doubt, create a goal.
+- **Why**: This project uses Ralph as an orchestrated pipeline. Changes made outside the goal system bypass review, tracking, and automation.
+
+When a user asks for a code change:
+1. Author a goal describing the change (see Goal Authoring below)
+2. Create it with `goal-create` and queue it with `goal-queue`
+3. Do NOT edit source files directly unless the user has explicitly overridden this workflow
+
 ## Architecture
 
 Part of a multi-service system:
