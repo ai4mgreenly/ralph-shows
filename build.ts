@@ -20,5 +20,11 @@ await esbuild.build({
 await Deno.copyFile("index.html", "dist/index.html");
 await Deno.copyFile("favicon.jpeg", "dist/favicon.jpeg");
 
+try {
+  await Deno.copyFile("static/theRALPHS.jpeg", "dist/theRALPHS.jpeg");
+} catch {
+  // static/theRALPHS.jpeg not present; banner will render without image
+}
+
 esbuild.stop();
 console.log("Build complete → dist/");
