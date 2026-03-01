@@ -1,11 +1,12 @@
 import { useEffect } from "preact/hooks";
 import { signal } from "@preact/signals";
-import { fetchGoal, fetchComments, fetchDependencies, type GoalDetail as GoalDetailType, type Comment } from "../api.ts";
+import { fetchGoal, fetchComments, fetchDependencies, fetchAttachments, type GoalDetail as GoalDetailType, type Comment, type Attachment } from "../api.ts";
 import { navigateHome, navigate } from "../state.ts";
 
 const goal = signal<GoalDetailType | null>(null);
 const comments = signal<Comment[]>([]);
 const deps = signal<Array<{ id: number; goal: GoalDetailType | null }>>([]);
+const attachments = signal<Attachment[]>([]);
 const loading = signal(true);
 
 export function GoalDetail({ id }: { id: number }) {
@@ -14,9 +15,11 @@ export function GoalDetail({ id }: { id: number }) {
     goal.value = null;
     comments.value = [];
     deps.value = [];
-    Promise.all([fetchGoal(id), fetchComments(id), fetchDependencies(id)]).then(async ([g, c, depList]) => {
+    attachments.value = [];
+    Promise.all([fetchGoal(id), fetchComments(id), fetchDependencies(id), fetchAttachments(id)]).then(async ([g, c, depList, atts]) => {
       goal.value = g;
       comments.value = c;
+      attachments.value = atts;
       const depGoals = await Promise.all(depList.map(async (depId) => ({
         id: depId,
         goal: await fetchGoal(depId),
@@ -51,6 +54,23 @@ export function GoalDetail({ id }: { id: number }) {
         <span>created {g.created_at}</span>
         <span>updated {g.updated_at}</span>
       </div>
+      {attachments.value.length > 0 && (
+        <div class="detail-attachments">
+          <h3>Attachments</h3>
+          <ul class="attachment-list">
+            {attachments.value.map((att) => (
+              <li key={att.id}>
+                <a
+                  href={`#/attachments/${g.id}/${att.id}`}
+                  target="_blank"
+                >
+                  {att.name}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
       <pre class="detail-body">{g.body}</pre>
       {deps.value.length > 0 && (
         <>

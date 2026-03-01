@@ -1,7 +1,9 @@
 import { signal } from "@preact/signals";
 import { fetchGoals, fetchDependencies, fetchGoal, type Goal, type PaginatedGoals } from "./api.ts";
 
-export const route = signal<{ view: "dashboard" } | { view: "goal"; id: number }>(
+export const route = signal<
+  { view: "dashboard" } | { view: "goal"; id: number } | { view: "attachment"; goalId: number; attachmentId: number }
+>(
   { view: "dashboard" },
 );
 
@@ -23,9 +25,12 @@ export function navigateHome() {
 
 function syncRoute() {
   const hash = location.hash;
-  const match = hash.match(/^#\/goals\/(\d+)$/);
-  if (match) {
-    route.value = { view: "goal", id: parseInt(match[1]) };
+  const goalMatch = hash.match(/^#\/goals\/(\d+)$/);
+  const attachmentMatch = hash.match(/^#\/attachments\/(\d+)\/(\d+)$/);
+  if (attachmentMatch) {
+    route.value = { view: "attachment", goalId: parseInt(attachmentMatch[1]), attachmentId: parseInt(attachmentMatch[2]) };
+  } else if (goalMatch) {
+    route.value = { view: "goal", id: parseInt(goalMatch[1]) };
   } else {
     route.value = { view: "dashboard" };
   }

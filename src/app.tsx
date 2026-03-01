@@ -7,6 +7,7 @@ import { Queued } from "./components/queued.tsx";
 import { Done } from "./components/done.tsx";
 import { Cancelled } from "./components/cancelled.tsx";
 import { GoalDetail } from "./components/goal-detail.tsx";
+import { AttachmentView } from "./components/attachment.tsx";
 
 function SummaryBar() {
   return (
@@ -24,6 +25,15 @@ export function App() {
   }, []);
 
   const r = route.value;
+
+  if (r.view === "attachment") {
+    return (
+      <div class="dashboard">
+        <h1 onClick={navigateHome}>theRALPHS</h1>
+        <AttachmentView goalId={r.goalId} attachmentId={r.attachmentId} />
+      </div>
+    );
+  }
 
   if (r.view === "goal") {
     return (

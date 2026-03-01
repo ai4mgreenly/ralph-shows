@@ -7,7 +7,8 @@
     "preact": "npm:preact@10",
     "preact/hooks": "npm:preact@10/hooks",
     "preact/jsx-runtime": "npm:preact@10/jsx-runtime",
-    "@preact/signals": "npm:@preact/signals@2"
+    "@preact/signals": "npm:@preact/signals@2",
+    "snarkdown": "npm:snarkdown@2"
   },
   "tasks": {
     "build": "deno run -A build.ts",
