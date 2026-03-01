@@ -1,11 +1,11 @@
 import { useEffect } from "preact/hooks";
 import { signal } from "@preact/signals";
-import { fetchGoal, fetchComments, fetchDependencies, type GoalDetail as GoalDetailType, type Comment, type Dependency } from "../api.ts";
+import { fetchGoal, fetchComments, fetchDependencies, type GoalDetail as GoalDetailType, type Comment } from "../api.ts";
 import { navigateHome, navigate } from "../state.ts";
 
 const goal = signal<GoalDetailType | null>(null);
 const comments = signal<Comment[]>([]);
-const deps = signal<Array<Dependency & { goal: GoalDetailType | null }>>([]);
+const deps = signal<Array<{ id: number; goal: GoalDetailType | null }>>([]);
 const loading = signal(true);
 
 export function GoalDetail({ id }: { id: number }) {
@@ -17,9 +17,9 @@ export function GoalDetail({ id }: { id: number }) {
     Promise.all([fetchGoal(id), fetchComments(id), fetchDependencies(id)]).then(async ([g, c, depList]) => {
       goal.value = g;
       comments.value = c;
-      const depGoals = await Promise.all(depList.map(async (d) => ({
-        ...d,
-        goal: await fetchGoal(d.depends_on_id),
+      const depGoals = await Promise.all(depList.map(async (depId) => ({
+        id: depId,
+        goal: await fetchGoal(depId),
       })));
       deps.value = depGoals;
       loading.value = false;
@@ -59,9 +59,9 @@ export function GoalDetail({ id }: { id: number }) {
             <h2>Dependencies</h2>
             <ul class="dep-list">
               {deps.value.map((d) => (
-                <li key={d.depends_on_id} class="dep-item">
-                  <a href="#" onClick={(e) => { e.preventDefault(); navigate(d.depends_on_id); }}>
-                    #{d.depends_on_id}{d.goal ? ` "${d.goal.title}"` : ""}
+                <li key={d.id} class="dep-item">
+                  <a href="#" onClick={(e) => { e.preventDefault(); navigate(d.id); }}>
+                    #{d.id}{d.goal ? ` "${d.goal.title}"` : ""}
                   </a>
                   {d.goal && (
                     <span class="dep-status" data-status={d.goal.status}>{d.goal.status}</span>

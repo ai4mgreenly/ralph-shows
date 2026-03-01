@@ -81,12 +81,7 @@ export async function fetchComments(goalId: number): Promise<Comment[]> {
   return data.items ?? [];
 }
 
-export interface Dependency {
-  id: number;
-  depends_on_id: number;
-}
-
-export async function fetchDependencies(goalId: number): Promise<Dependency[]> {
+export async function fetchDependencies(goalId: number): Promise<number[]> {
   const res = await fetch(`${BASE}/goals/${goalId}/dependencies`);
   const data = await res.json();
   if (!data.ok) return [];
