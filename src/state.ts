@@ -94,7 +94,7 @@ let timer: number | undefined;
 
 export function startPolling() {
   poll();
-  timer = setInterval(poll, 5000);
+  timer = setInterval(poll, 2000);
 }
 
 export function stopPolling() {

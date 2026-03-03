@@ -31,7 +31,7 @@ Part of a multi-service system:
 
 ### How It Works
 
-A static SPA that polls `GET /goals?status=<status>` on ralph-plans every 5 seconds. No auth — all services are localhost-only.
+A static SPA that polls `GET /goals?status=<status>` on ralph-plans every 2 seconds. No auth — all services are localhost-only.
 
 ### Source Layout
 
