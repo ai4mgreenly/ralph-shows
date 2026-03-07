@@ -12,6 +12,7 @@
   },
   "tasks": {
     "build": "deno run -A build.ts",
-    "dev": "deno run -A dev.ts"
+    "dev": "deno run -A dev.ts",
+    "serve": "deno run -A serve.ts"
   }
 }
