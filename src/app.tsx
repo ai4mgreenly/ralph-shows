@@ -9,6 +9,16 @@ import { Cancelled } from "./components/cancelled.tsx";
 import { GoalDetail } from "./components/goal-detail.tsx";
 import { AttachmentView } from "./components/attachment.tsx";
 
+function NavBar() {
+  return (
+    <nav style="font-family: monospace; font-size: 0.85em; margin-bottom: 1em; display: flex; gap: 1.5rem; border-bottom: 1px solid #21262d; padding-bottom: 0.75em;">
+      <a href="/" style="color: #58a6ff; text-decoration: none;">ralph-shows</a>
+      <a href="/api/logs/" style="color: #58a6ff; text-decoration: none;">ralph-logs</a>
+      <a href="/api/counts/" style="color: #58a6ff; text-decoration: none;">ralph-counts</a>
+    </nav>
+  );
+}
+
 function SummaryBar() {
   return (
     <div style="font-family: monospace; font-size: 0.9em; color: #aaa; margin-bottom: 1em;">
@@ -33,6 +43,7 @@ export function App() {
           <img src="/theRALPHS.jpeg" alt="theRALPHS" />
           <span class="banner-text">theRALPHS</span>
         </div>
+        <NavBar />
         <AttachmentView goalId={r.goalId} attachmentId={r.attachmentId} />
       </div>
     );
@@ -45,6 +56,7 @@ export function App() {
           <img src="/theRALPHS.jpeg" alt="theRALPHS" />
           <span class="banner-text">theRALPHS</span>
         </div>
+        <NavBar />
         <GoalDetail id={r.id} />
       </div>
     );
@@ -56,6 +68,7 @@ export function App() {
         <img src="/theRALPHS.jpeg" alt="theRALPHS" />
         <span class="banner-text">theRALPHS</span>
       </div>
+      <NavBar />
       <SummaryBar />
       <Running />
       <Queued />
