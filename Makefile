@@ -7,6 +7,7 @@ build:
 
 install: build
 	mkdir -p $(INSTALL_DIR)
-	cp -r dist/ $(INSTALL_DIR)/dist
+	rm -rf $(INSTALL_DIR)/dist
+	cp -r dist $(INSTALL_DIR)/dist
 	cp dev.ts $(INSTALL_DIR)/dev.ts
 	cp deno.json $(INSTALL_DIR)/deno.json
