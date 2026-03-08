@@ -1,4 +1,4 @@
-const BASE = document.querySelector('meta[name="ralph-plans-url"]')?.getAttribute('content') ?? "http://localhost:5001";
+const BASE = document.querySelector('meta[name="ralph-plans-url"]')?.getAttribute('content') ?? "http://127.0.0.1:5001";
 
 export interface Goal {
   id: number;
