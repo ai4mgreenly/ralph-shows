@@ -11,3 +11,6 @@ install: build
 	cp -r dist $(INSTALL_DIR)/dist
 	cp dev.ts $(INSTALL_DIR)/dev.ts
 	cp deno.json $(INSTALL_DIR)/deno.json
+	mkdir -p $(HOME)/.local/bin
+	printf '#!/bin/sh\nexec deno run -A $(INSTALL_DIR)/dev.ts\n' > $(HOME)/.local/bin/ralph-shows
+	chmod +x $(HOME)/.local/bin/ralph-shows
