@@ -1,5 +1,4 @@
-declare const __RALPH_PLANS_URL__: string;
-const BASE = __RALPH_PLANS_URL__;
+const BASE = document.querySelector('meta[name="ralph-plans-url"]')?.getAttribute('content') ?? "http://localhost:5001";
 
 export interface Goal {
   id: number;
