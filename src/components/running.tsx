@@ -18,7 +18,7 @@ export function Running() {
                 <a class="goal-id" href={`#/goals/${g.id}`} onClick={(e) => { e.preventDefault(); navigate(g.id); }}>#{g.id}</a>
                 <span class="goal-repo">{g.org}/{g.repo}</span>
                 <span class="goal-title">{g.title}</span>
-                <a class="goal-log" href={`/api/logs/?file=/home/ai4mgreenly/.local/state/ralph/goals/${g.id}/ralph.log`} target="_blank" rel="noreferrer" style={{ marginLeft: "0.5em", fontSize: "0.85em", color: "#4fc3f7" }}>log</a>
+                <a class="goal-log" href={`http://ralph-logs.localhost:8000/?file=/home/ai4mgreenly/.local/state/ralph/goals/${g.id}/ralph.log`} target="_blank" rel="noreferrer" style={{ marginLeft: "0.5em", fontSize: "0.85em", color: "#4fc3f7" }}>log</a>
               </li>
             ))}
           </ul>

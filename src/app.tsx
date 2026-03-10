@@ -13,8 +13,8 @@ function NavBar() {
   return (
     <nav style="font-family: monospace; font-size: 0.85em; margin-bottom: 1em; display: flex; gap: 1.5rem; border-bottom: 1px solid #21262d; padding-bottom: 0.75em;">
       <a href="/" style="color: #58a6ff; text-decoration: none;">ralph-shows</a>
-      <a href="/api/logs/" style="color: #58a6ff; text-decoration: none;">ralph-logs</a>
-      <a href="/api/counts/" style="color: #58a6ff; text-decoration: none;">ralph-counts</a>
+      <a href="http://ralph-logs.localhost:8000/" style="color: #58a6ff; text-decoration: none;">ralph-logs</a>
+      <a href="http://ralph-counts.localhost:8000/" style="color: #58a6ff; text-decoration: none;">ralph-counts</a>
     </nav>
   );
 }
