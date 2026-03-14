@@ -2,7 +2,7 @@ const plansHost = Deno.env.get("RALPH_PLANS_HOST") ?? "127.0.0.1";
 const plansPort = Deno.env.get("RALPH_PLANS_PORT") ?? "5001";
 const plansUrl = `http://${plansHost}:${plansPort}`;
 
-const host = Deno.env.get("RALPH_SHOWS_HOST") ?? "127.0.0.1";
+const host = Deno.env.get("RALPH_SHOWS_HOST") ?? "localhost";
 const port = parseInt(Deno.env.get("RALPH_SHOWS_PORT") ?? "5000");
 
 console.log(`Serving on http://${host}:${port}`);
